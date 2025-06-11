@@ -1,9 +1,9 @@
 # Phonocardiogram Classification with 1D CNN
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-[![Conference](https://img.shields.io/badge/Conference-EUSPICO%202023-green)](https://2023.eusipco.org/)
+[![Conference](https://img.shields.io/badge/Conference-EUSPICO%202024-green)](https://2024.eusipco.org/)
 
-Implementation of the paper ["Phonocardiogram classification based on 1D CNN with pitch-shifting and signal uniformity techniques"](https://scholar.google.com/citations?view_op=view_citation&hl=en&user=D5W9TVwAAAAJ&citation_for_view=D5W9TVwAAAAJ:u-x6o8ySG0sC) presented at EUSPICO 2023.
+Implementation of the paper ["Phonocardiogram classification based on 1D CNN with pitch-shifting and signal uniformity techniques"](https://scholar.google.com/citations?view_op=view_citation&hl=en&user=D5W9TVwAAAAJ&citation_for_view=D5W9TVwAAAAJ:u-x6o8ySG0sC) presented at EUSPICO 2024.
 
 ## Abstract
 
