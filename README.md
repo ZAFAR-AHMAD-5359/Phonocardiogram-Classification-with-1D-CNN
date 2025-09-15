@@ -1,4 +1,4 @@
-# Phonocardiogram Classification with 1D-CNN and Pitch-Shifting Augmentation 🫀🔊
+# Phonocardiogram Classification with 1D-CNN and Pitch-Shifting Augmentation 
 
 [![Paper](https://img.shields.io/badge/Paper-EUSIPCO%202024-blue)](link-to-paper)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
