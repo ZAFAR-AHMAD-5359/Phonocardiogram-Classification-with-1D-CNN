@@ -1,221 +1,63 @@
-# Phonocardiogram Classification with 1D-CNN and Pitch-Shifting Augmentation 
+# Five-class heart-sound classification with a 1D CNN
 
-[![Paper](https://img.shields.io/badge/Paper-EUSIPCO%202024-blue)](link-to-paper)
-[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org/)
-[![TensorFlow](https://img.shields.io/badge/TensorFlow-2.0+-orange.svg)](https://www.tensorflow.org/)
+Publication materials and historical source excerpts for **Phonocardiogram Classification Based on 1D CNN with Pitch-Shifting and Signal Uniformity Techniques**, published at EUSIPCO 2024. Zafar Ahmad is the first author.
 
-## 📋 Overview
+The study evaluates five heart-sound classes: **normal, aortic stenosis, mitral stenosis, mitral regurgitation and mitral valve prolapse**. It is separate from the [ICAI paediatric normal/abnormal study](https://github.com/ZAFAR-AHMAD-5359/PCG-Pediatric-CHD-Detection). The paper does not establish a paediatric population for this five-class dataset.
 
-This repository implements a novel **1D Convolutional Neural Network** for automated classification of heart sounds (phonocardiograms) with an innovative **pitch-shifting augmentation** technique that preserves diagnostic frequencies while improving model robustness.
+## Publication
 
-### 🎯 Key Features
-- ✅ **99.6% Classification Accuracy** on test dataset
-- ✅ **Novel Pitch-Shifting Augmentation** preserving 20-650 Hz diagnostic band
-- ✅ **Class-Balanced Focal Loss** for handling imbalanced medical data
-- ✅ **Real-time Processing** capability for clinical deployment
-- ✅ **Multi-class Classification** for 8 cardiac conditions
+Zafar Ahmad, Muhammad Salman Khan, Muhammad E. H. Chowdhury, Susu Zughaier and Wanis Hamad Ibrahim. “Phonocardiogram Classification Based on 1D CNN with Pitch-Shifting and Signal Uniformity Techniques.” *2024 32nd European Signal Processing Conference (EUSIPCO)*, pp. 1536–1540, 2024.
 
-## 🚀 Quick Start
+- [Publisher record and DOI](https://doi.org/10.23919/EUSIPCO63174.2024.10715037)
+- [Open proceedings paper — EURASIP](https://eurasip.org/Proceedings/Eusipco/Eusipco2024/pdfs/0001536.pdf)
+- [Official conference program and author list](https://cmsworkshops.com/EUSIPCO2024/view_paper.php?PaperNum=1705)
+- [Existing paper file](Phonocardiogram_Classification_Based_on_1D_CNN_with_Pitch-Shifting_and_Signal_Uniformity_Techniques.pdf)
 
-### Prerequisites
-```bash
-pip install -r requirements.txt
-```
+The author spelling above follows the official conference program.
 
-### Installation
-```bash
-git clone https://github.com/ZAFAR-AHMAD-5359/Phonocardiogram-Classification-with-1D-CNN.git
-cd Phonocardiogram-Classification-with-1D-CNN
-```
+## Research scope
 
-### Basic Usage
-```python
-from pcg_classifier import PCGClassifier
-import numpy as np
+The paper describes a public dataset with 200 recordings per class, sampled at 8 kHz. Its method standardises recordings to three seconds, applies pitch-shifting augmentation, extracts mel-frequency cepstral coefficients and evaluates a one-dimensional convolutional neural network.
 
-# Initialize classifier
-classifier = PCGClassifier(model_path='models/best_model.h5')
+Read the paper for the model configurations, evaluation procedure and reported results. These are research dataset results; they do not establish clinical deployment, prospective patient-level performance or measured real-time device operation. No new reproduction or clinical validation is reported by this repository update.
 
-# Load and preprocess PCG signal
-signal = np.load('sample_pcg.npy')
-preprocessed = classifier.preprocess(signal, sample_rate=4000)
+## What is available here
 
-# Classify
-prediction, confidence = classifier.classify(preprocessed)
-print(f"Diagnosis: {prediction} (Confidence: {confidence:.2%})")
-```
+| File | Contents |
+|---|---|
+| Paper PDF linked above | Existing copy of the published paper |
+| [code/README.md](code/README.md) | Historical Python/Colab model-training and evaluation source excerpt |
+| [data/README.md](data/README.md) | Link to the dataset source used in the study |
+| [requirements.txt](requirements.txt) | Existing dependency list; no tested reproduction environment is supplied |
+| [CONTRIBUTING.md](CONTRIBUTING.md) | Existing general contribution guidance |
 
-## 📊 Performance Metrics
+The source excerpt mounts Google Drive and expects WAV recordings and spreadsheet labels in personal training/test folders. Those inputs, prepared datasets and trained model weights are not included. There is no packaged classifier API or runnable inference demo in the current inventory. Installing the dependency list alone therefore does not reproduce the publication. The excerpt is preserved as historical material; execution and exact correspondence with every published experiment have not been verified here.
 
-| Metric | Value | Description |
-|--------|-------|-------------|
-| **Accuracy** | 99.6% | Overall classification accuracy |
-| **Sensitivity** | 98.2% | True positive rate for abnormal cases |
-| **Specificity** | 99.8% | True negative rate for normal cases |
-| **F1-Score** | 0.987 | Harmonic mean of precision and recall |
-| **AUC-ROC** | 0.994 | Area under the ROC curve |
+## Data access and reuse
 
-### Confusion Matrix
-![Confusion Matrix](assets/confusion_matrix.png)
+The existing [data note](data/README.md) points to the [heart-sound dataset source](https://github.com/yaseen21khan/Classification-of-Heart-Sound-Signal-Using-Multiple-Features-/blob/master/README.md). Obtain data from that source under its applicable access and reuse terms; recordings are not bundled here. Check the original source documentation and the paper when preparing an independent reproduction.
 
-## 🔬 Methodology
+A `LICENSE` file is not currently included. For repository reuse permissions, contact the maintainer. The publication and external dataset remain subject to their respective terms.
 
-### 1. Signal Preprocessing
-```python
-def preprocess_signal(signal, fs=4000):
-    # Bandpass filter (20-650 Hz)
-    filtered = butterworth_filter(signal, 20, 650, fs)
+## Citation
 
-    # Normalize
-    normalized = (filtered - np.mean(filtered)) / np.std(filtered)
-
-    # Segment into 4-second chunks
-    segments = segment_signal(normalized, chunk_size=4*fs)
-
-    return segments
-```
-
-### 2. Pitch-Shifting Augmentation
-Our novel approach preserves diagnostic frequencies:
-```python
-def pitch_shift_augmentation(signal, shift_range=[-2, 2]):
-    # Preserve 20-650 Hz diagnostic band
-    diagnostic_band = extract_band(signal, 20, 650)
-
-    # Apply pitch shift to higher frequencies
-    high_freq = extract_band(signal, 650, 2000)
-    shifted = librosa.effects.pitch_shift(high_freq, sr=4000, n_steps=shift_range)
-
-    # Combine preserved and shifted components
-    augmented = diagnostic_band + shifted
-    return augmented
-```
-
-### 3. 1D-CNN Architecture
-```
-Input (4000,1)
-    ↓
-Conv1D(64, 50) → BatchNorm → ReLU → MaxPool
-    ↓
-Conv1D(128, 25) → BatchNorm → ReLU → MaxPool
-    ↓
-Conv1D(256, 10) → BatchNorm → ReLU → GlobalMaxPool
-    ↓
-Dense(128) → Dropout(0.5)
-    ↓
-Dense(8, softmax)
-```
-
-## 📁 Dataset
-
-### Data Distribution
-| Class | Samples | Percentage |
-|-------|---------|------------|
-| Normal | 150 | 25.0% |
-| VSD | 72 | 12.0% |
-| ASD | 48 | 8.0% |
-| MR | 36 | 6.0% |
-| PDA | 24 | 4.0% |
-| AS | 30 | 5.0% |
-| PS | 27 | 4.5% |
-| Others | 219 | 36.5% |
-| **Total** | **606** | **100%** |
-
-### Data Sources
-- 🏥 Multi-site collection from 3 hospitals
-- 👶 Pediatric population (ages 0-18)
-- ✅ Echo-validated ground truth
-
-## 🛠️ Advanced Features
-
-### Feature Extraction
-- **MFCC** (13 coefficients)
-- **Spectral Centroid**
-- **Zero Crossing Rate**
-- **Spectral Roll-off**
-- **Envelope Features**
-
-### Model Optimization
-- **Early Stopping** with patience=10
-- **Learning Rate Scheduling**
-- **K-Fold Cross Validation** (k=5)
-- **Class Weights** for imbalanced data
-
-## 📈 Results Visualization
-
-### Training History
-![Training History](assets/training_history.png)
-
-### ROC Curves
-![ROC Curves](assets/roc_curves.png)
-
-### Sample Classifications
-![Sample Results](assets/sample_results.png)
-
-## 🔧 Configuration
-
-Edit `config.yaml` for custom settings:
-```yaml
-model:
-  architecture: "1D-CNN"
-  input_shape: [4000, 1]
-  num_classes: 8
-
-training:
-  batch_size: 32
-  epochs: 100
-  learning_rate: 0.001
-
-augmentation:
-  pitch_shift: true
-  shift_range: [-2, 2]
-  preserve_band: [20, 650]
-```
-
-## 📚 Citation
-
-If you use this code in your research, please cite:
 ```bibtex
 @inproceedings{ahmad2024phonocardiogram,
-  title={Phonocardiogram Classification Based on 1D CNN with Pitch-Shifting and Signal Uniformity Techniques},
-  author={Ahmad, Zafar and Khan, Salman and others},
-  booktitle={European Signal Processing Conference (EUSIPCO)},
-  year={2024},
-  organization={IEEE}
+  author = {Ahmad, Zafar and Khan, Muhammad Salman and
+            Chowdhury, Muhammad E. H. and Zughaier, Susu and
+            Ibrahim, Wanis Hamad},
+  title = {Phonocardiogram Classification Based on 1D CNN with Pitch-Shifting and Signal Uniformity Techniques},
+  booktitle = {2024 32nd European Signal Processing Conference (EUSIPCO)},
+  year = {2024},
+  pages = {1536--1540},
+  doi = {10.23919/EUSIPCO63174.2024.10715037}
 }
 ```
 
-## 🤝 Contributing
+## Contact
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+Zafar Ahmad — [ahmadzafar577@gmail.com](mailto:ahmadzafar577@gmail.com)
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+[Cardiovascular research portfolio](https://zafar-ahmad-5359.github.io/research.html) · [Google Scholar](https://scholar.google.com/citations?user=D5W9TVwAAAAJ&hl=en) · [LinkedIn](https://www.linkedin.com/in/zafar-ahmad-ab87b6183/)
 
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 👤 Author
-
-**Zafar Ahmad**
-- 🌐 GitHub: [@ZAFAR-AHMAD-5359](https://github.com/ZAFAR-AHMAD-5359)
-- 📧 Email: zafarahmad5359@gmail.com
-- 🎓 Google Scholar: [Publications](https://scholar.google.com/citations?user=D5W9TVwAAAAJ&hl=en)
-
-## 🙏 Acknowledgments
-
-- Qatar University for research support
-- Medical staff at participating hospitals
-- Open-source community for tools and libraries
-
-## ⚠️ Disclaimer
-
-This tool is for research purposes only and should not be used as a substitute for professional medical diagnosis.
-
----
-⭐ **If you find this work useful, please consider giving it a star!**
+Documentation curated on 10 October 2026. Published paper, existing source excerpt, data note and repository history are preserved.
